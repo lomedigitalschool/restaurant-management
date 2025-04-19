@@ -51,7 +51,7 @@ const Reservation = sequelize.define('reservation', {
 });
 
 const MenuCooked = sequelize.define('menucooked', { },{
-    tableName: 'menuCooked',
+    tableName: 'menucooked',
     timestamps: false // 👈 disables createdAt & updatedAt 
 });
 
@@ -71,17 +71,19 @@ Table.hasMany(Reservation, { foreignKey: 'tableId' });
 Customer.hasMany(Reservation, { foreignKey: 'customerId' });
 
 // Menu ↔ Product (N:N)
-Menu.belongsToMany(Product, { through: MenuProduct, foreignKey: 'menuId' });
-Product.belongsToMany(Menu, { through: MenuProduct, foreignKey: 'productId' });
+Menu.belongsToMany(Product, { through: 'menuproducts', timestamps: false, foreignKey: 'menuId' });
+Product.belongsToMany(Menu, { through: 'menuproducts', timestamps: false, foreignKey: 'productId' });
 
 // Menu ↔ Cook ↔ Reservation (N:N:N via MenuCooked)
 Menu.belongsToMany(Cook, {
   through: MenuCooked,
+  timestamps: false,
   foreignKey: 'menuId',
   otherKey: 'cookId'
 });
 Cook.belongsToMany(Menu, {
   through: MenuCooked,
+  timestamps: false,
   foreignKey: 'cookId',
   otherKey: 'menuId'
 });
