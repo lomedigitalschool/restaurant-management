@@ -1,13 +1,46 @@
 // Add function to manage customers
-const { Reservation } = require('../models');
+const { Reservation, Product } = require('../models');
 const { ask } = require('./common');
 
 async function createProduct() {
-    console.log('\n Create product');
+    console.log('\n📝  Create product');
+
+    // 1. Name (required)
+    let name;
+    do {
+        name = await ask('Product name (required): ');
+        if (!name) console.log('❌ Name cannot be empty.');
+    } while (!name);
+
+    // 2. Description (optional)
+    const description = await ask('Description (optional): ');
+
+    // 3. Create product
+    const product = await Product.create({
+        name: name,
+        description: description
+    });
+
+    console.log('\n✅ Product created successfully:');
+    console.log(product.toJSON());
 }
 
 async function listProducts() {
-    console.log('\n List products');
+    console.log('\n📋 List products');
+
+    const products = await Product.findAll();
+    console.log(
+        'Name'.padEnd(30) +
+        'Description'.padEnd(30)
+      );
+      console.log('-'.repeat(75));
+    
+    products.forEach(p => {
+        console.log(
+            String(p.name || '').padEnd(30) +
+            String(p.description || '').padEnd(30)
+        );
+    });
 }
 
 module.exports = {
