@@ -83,7 +83,7 @@ const { ask, closeInterface } = require('./components/common');
 (async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log('✅ Connected to database.');
 
     mainMenu();

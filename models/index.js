@@ -3,25 +3,90 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+const Cook = sequelize.define('cook', {
+  firstname: { type: DataTypes.STRING(50), allowNull: false },
+  lastname: { type: DataTypes.STRING(50), allowNull: false },
+  email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
+  phonenumber: { type: DataTypes.STRING(50), allowNull: false, unique: true }
+  },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
+});
+
 const Customer = sequelize.define('customer', {
-  
-});
-
-const Table = sequelize.define('table', {
-  
-});
-
-const Product = sequelize.define('product', {
-  
+  firstname: { type: DataTypes.STRING(50), allowNull: false },
+  lastname: { type: DataTypes.STRING(50), allowNull: false },
+  email: { type: DataTypes.STRING(255), allowNull: false, unique: true },
+  phonenumber: { type: DataTypes.STRING(50), allowNull: false, unique: true }
+  },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
 });
 
 const Menu = sequelize.define('menu', {
-  
+  name: { type: DataTypes.STRING(255), allowNull: false },
+  description: { type: DataTypes.STRING(255)},
+  day: {type: DataTypes.INTEGER, allowNull: false },
+  price: {type: DataTypes.DECIMAL, allowNull: false}
+  },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
+});
+
+const Product = sequelize.define('product', {
+  name: { type: DataTypes.STRING(50), allowNull: false },
+  description: { type: DataTypes.STRING(255) }
+  },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
+});
+
+const Table = sequelize.define('table', {
+  name: { type: DataTypes.STRING(50), allowNull: false },
+  description: { type: DataTypes.STRING(255) }
+  },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
 });
 
 const Reservation = sequelize.define('reservation', {
-  
+  date: {type: DataTypes.DATE, allowNull: false}
+  },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
 });
+
+const MenuCooked = sequelize.define('menucooked', { },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
+});
+
+const MenuProduct = sequelize.define('menuproduct', { },{
+    timestamps: false // 👈 disables createdAt & updatedAt 
+});
+
+/* ========== Associations ========== */
+
+// Reservation belongs to Menu, Table, Customer
+Reservation.belongsTo(Menu, { foreignKey: 'menuId' });
+Reservation.belongsTo(Table, { foreignKey: 'tableId' });
+Reservation.belongsTo(Customer, { foreignKey: 'customerId' });
+
+Menu.hasMany(Reservation, { foreignKey: 'menuId' });
+Table.hasMany(Reservation, { foreignKey: 'tableId' });
+Customer.hasMany(Reservation, { foreignKey: 'customerId' });
+
+// Menu ↔ Product (N:N)
+Menu.belongsToMany(Product, { through: MenuProduct, foreignKey: 'menuId' });
+Product.belongsToMany(Menu, { through: MenuProduct, foreignKey: 'productId' });
+
+// Menu ↔ Cook ↔ Reservation (N:N:N via MenuCooked)
+Menu.belongsToMany(Cook, {
+  through: MenuCooked,
+  foreignKey: 'menuId',
+  otherKey: 'cookId'
+});
+Cook.belongsToMany(Menu, {
+  through: MenuCooked,
+  foreignKey: 'cookId',
+  otherKey: 'menuId'
+});
+MenuCooked.belongsTo(Reservation, { foreignKey: 'reservationId' });
+
+/* ========== Export models ========== */
 
 module.exports = {
   sequelize,
@@ -29,5 +94,8 @@ module.exports = {
   Table,
   Product,
   Menu,
-  Reservation
+  Reservation,
+  Cook,
+  MenuCooked,
+  MenuProduct
 };
