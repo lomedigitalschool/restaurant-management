@@ -51,6 +51,7 @@ const Reservation = sequelize.define('reservation', {
 });
 
 const MenuCooked = sequelize.define('menucooked', { },{
+    tableName: 'menuCooked',
     timestamps: false // 👈 disables createdAt & updatedAt 
 });
 

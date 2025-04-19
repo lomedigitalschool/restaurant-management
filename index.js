@@ -83,7 +83,7 @@ const { ask, closeInterface } = require('./components/common');
 (async () => {
   try {
     await sequelize.authenticate();
-    await sequelize.sync();
+    await sequelize.sync(); //	Creates tables only if they don’t exist
     console.log('✅ Connected to database.');
 
     mainMenu();
