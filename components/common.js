@@ -5,6 +5,16 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
+const daysOfWeek = {
+  1: 'Monday',
+  2: 'Tuesday',
+  3: 'Wednesday',
+  4: 'Thursday',
+  5: 'Friday',
+  6: 'Saturday',
+  7: 'Sunday'
+};
+
 function ask(question) {
   return new Promise(resolve => rl.question(question, answer => resolve(answer.trim())));
 }
@@ -16,5 +26,6 @@ function closeInterface() {
 module.exports = {
   ask,
   rl,
+  daysOfWeek,
   closeInterface
 };
