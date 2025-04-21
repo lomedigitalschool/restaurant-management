@@ -194,11 +194,10 @@ async function viewMenu() {
     console.log(`Price      : ${menu.price} FCFA \n`);
   
     console.log('📦 Products in this menu:');
-    console.log(`→ Products found: ${menu.Products?.length}`);
-    if (menu.Products?.length === 0) {
+    if (menu.products?.length === 0) {
       console.log('  - No products linked.');
     } else {
-      menu.Products?.forEach(p => {
+      menu.products?.forEach(p => {
         console.log(`  - ${p.name}: ${p.description || ''}`);
       });
     }
