@@ -28,11 +28,67 @@ async function manageCustomers() {
 }
 
 async function createCustomer() {
-    console.log('\n Create customer');
+  console.log('\n📝 Create a new customer');
+
+  let firstname;
+  do {
+    firstname = await ask('First name: ');
+    if (!firstname) console.log('❌ First name cannot be empty.');
+  } while (!firstname);
+
+  let lastname;
+  do {
+    lastname = await ask('Last name: ');
+    if (!lastname) console.log('❌ Last name cannot be empty.');
+  } while (!lastname);
+
+  let email;
+  do {
+    email = await ask('Email: ');
+    if (!email) {
+      console.log('❌ Email is required.');
+    }
+  } while (!email);
+
+  let phonenumber;
+  do {
+    phonenumber = await ask('Phone number: ');
+    if (!phonenumber) {
+      console.log('❌ Phone number is required.');
+    }
+  } while (!phonenumber);
+
+  const customer = await Customer.create({ firstname, lastname, email, phonenumber });
+  console.log('\n✅ Customer created:');
+  console.log(customer.toJSON());
 }
 
 async function listCustomers() {
-  console.log('\n📋 Customers list:');
+  console.log('\n📋 List of customers');
+
+  const customers = await Customer.findAll();
+
+  if (customers.length === 0) {
+    console.log('⚠️ No customers found.');
+    return;
+  }
+
+  console.log(
+    'First name'.padEnd(15) +
+    'Last name'.padEnd(15) +
+    'Email'.padEnd(30) +
+    'Phone'.padEnd(20)
+  );
+  console.log('-'.repeat(80));
+
+  customers.forEach(c => {
+    console.log(
+      String(c.firstname).padEnd(15) +
+      String(c.lastname).padEnd(15) +
+      String(c.email).padEnd(30) +
+      String(c.phonenumber).padEnd(20)
+    );
+  });
 }
 
 module.exports = {
