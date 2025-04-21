@@ -28,11 +28,44 @@ async function manageTables() {
 }
 
 async function createTable() {
-  console.log('\n Create table');
+    console.log('\n📝  Create table');
+
+    // 1. Name (required)
+    let name;
+    do {
+        name = await ask('Table name (required): ');
+        if (!name) console.log('❌ Name cannot be empty.');
+    } while (!name);
+
+    // 2. Description (optional)
+    const description = await ask('Description (optional): ');
+
+    // 3. Create table
+    const table = await Table.create({
+        name: name,
+        description: description
+    });
+
+    console.log('\n✅ Table created successfully:');
+    console.log(table.toJSON());
 }
 
 async function listTables() {
-  console.log('\n List tables');
+  console.log('\n📋 List tables');
+
+  const tables = await Table.findAll();
+  console.log(
+      'Name'.padEnd(30) +
+      'Description'.padEnd(30)
+    );
+    console.log('-'.repeat(75));
+  
+  tables.forEach(p => {
+      console.log(
+          String(p.name || '').padEnd(30) +
+          String(p.description || '').padEnd(30)
+      );
+  });
 }
 
 module.exports = {
